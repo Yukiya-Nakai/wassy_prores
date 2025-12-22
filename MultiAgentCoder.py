@@ -151,6 +151,7 @@ def node_planner_reviser(state: AgentState):
         # ここで discussion_log を上書きせず、これまでの流れを維持するか、要約を追加するか選べます。
         # 今回は可視化用にフルのログを残します。
     }
+    
 
 def node_tester(state: AgentState):
     """Role B: テストコード生成 (TDD)"""
