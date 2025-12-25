@@ -93,8 +93,8 @@ def node_planner_po(state: AgentState) -> AgentState:
     
     prompt = ChatPromptTemplate.from_messages([
         ("system", """あなたは優秀なプロダクトオーナーです。
-ユーザーの要望を分析し、開発すべき機能の「目的」「背景」「主要なユーザーストーリー」を明確に定義してください。
-技術的な詳細（どう実装するか）には踏み込まず、「何を作るか（What）」に集中してください。"""),
+        ユーザーの要望を分析し、開発すべき機能の「目的」「背景」「主要なユーザーストーリー」を明確に定義してください。
+        技術的な詳細（どう実装するか）には踏み込まず、「何を作るか（What）」に集中してください。"""),
         ("human", f"User Request: {req}")
     ])
     response = (prompt | llm).invoke({})
@@ -118,8 +118,8 @@ def node_planner_architect(state: AgentState) -> AgentState:
     
     prompt = ChatPromptTemplate.from_messages([
         ("system", """あなたは熟練のソフトウェアアーキテクトです。
-POの定義に基づき、Pythonでの実装方針（関数構成、利用ライブラリ、アルゴリズム概要）を設計してください。
-もしフィードバック（手戻り理由）がある場合は、それを解消するように設計を見直してください。"""),
+        POの定義に基づき、Pythonでの実装方針（関数構成、利用ライブラリ、アルゴリズム概要）を設計してください。
+        もしフィードバック（手戻り理由）がある場合は、それを解消するように設計を見直してください。"""),
         ("human", f"User Request: {req}\n\nPO Definition:\n{po_out}\n\nFeedback/Issues:\n{feedback}")
     ])
     response = (prompt | llm).invoke({})
@@ -133,12 +133,12 @@ def node_planner_critic(state: AgentState) -> AgentState:
     
     prompt = ChatPromptTemplate.from_messages([
         ("system", """あなたは「悪魔の代弁者（Devil's Advocate）」を務めるシニアエンジニアです。
-Architectの設計案に対して、以下の観点で厳しく指摘を行ってください。
-1. **エッジケース**: 空入力、巨大な数値、不正な型、ファイル欠損など。
-2. **論理的欠陥**: アルゴリズムの不備や無限ループの可能性。
-3. **セキュリティ**: 脆弱性の可能性。
+        Architectの設計案に対して、以下の観点で厳しく指摘を行ってください。
+        1. **エッジケース**: 空入力、巨大な数値、不正な型、ファイル欠損など。
+        2. **論理的欠陥**: アルゴリズムの不備や無限ループの可能性。
+        3. **セキュリティ**: 脆弱性の可能性。
 
-褒める必要はありません。リスクを列挙してください。"""),
+        褒める必要はありません。リスクを列挙してください。"""),
         ("human", f"Architect Design:\n{arch_out}")
     ])
     response = (prompt | llm).invoke({})
@@ -157,13 +157,13 @@ def node_planner_reviser(state: AgentState) -> AgentState:
     
     prompt = ChatPromptTemplate.from_messages([
         ("system", """あなたは議論をまとめるリバイザーです。
-これまでの議論を統合し、TesterとDeveloperに渡すための**最終的な仕様書(JSON)**を作成してください。
+        これまでの議論を統合し、TesterとDeveloperに渡すための**最終的な仕様書(JSON)**を作成してください。
 
-重要な指示:
-1. Criticが指摘した「エッジケース」は必ず `edge_cases` リストに含めてください。
-2. もしCriticの指摘が致命的で、現在のArchitect案では修正不可能（根本的な設計ミス）と判断した場合は、
-   `needs_replan` を True にし、`replan_reason` に理由を記述してください。
-"""),
+        重要な指示:
+        1. Criticが指摘した「エッジケース」は必ず `edge_cases` リストに含めてください。
+        2. もしCriticの指摘が致命的で、現在のArchitect案では修正不可能（根本的な設計ミス）と判断した場合は、
+        `needs_replan` を True にし、`replan_reason` に理由を記述してください。
+        """),
         ("human", context)
     ])
     
@@ -220,10 +220,10 @@ def node_tester(state: AgentState) -> AgentState:
 
     prompt = ChatPromptTemplate.from_messages([
         ("system", """あなたはpytestのエキスパートです。以下のルールを守ってください。
-- `import pytest` を必ず含める。
-- 実装コードは `implementation.py` にあると仮定し、`from implementation import *` を行う。
-- 全てのテスト関数は `test_` で始める。
-- Pythonコードブロックのみを出力する。"""),
+        - `import pytest` を必ず含める。
+        - 実装コードは `implementation.py` にあると仮定し、`from implementation import *` を行う。
+        - 全てのテスト関数は `test_` で始める。
+        - Pythonコードブロックのみを出力する。"""),
         ("human", f"仕様書: {json.dumps(spec, ensure_ascii=False)}\n既存テスト: {existing_test}\n\n指示: {instruction}")
     ])
     
@@ -243,8 +243,8 @@ def node_coder(state: AgentState) -> AgentState:
     
     prompt = ChatPromptTemplate.from_messages([
         ("system", """あなたはPythonエンジニアです。
-提供された「テストコード」をすべてパス(Green)することだけを目標に実装してください。
-YAGNI原則に従い、テストを通すための最小限の実装を行ってください。"""),
+        提供された「テストコード」をすべてパス(Green)することだけを目標に実装してください。
+        YAGNI原則に従い、テストを通すための最小限の実装を行ってください。"""),
         ("human", f"""
         仕様: {json.dumps(spec, ensure_ascii=False)}
         テストコード: {test_code}
@@ -298,17 +298,17 @@ def node_reflector(state: AgentState) -> AgentState:
 
     prompt = ChatPromptTemplate.from_messages([
         ("system", """あなたはCIログを分析するリードエンジニアです。
-状況に応じて次のアクション(`action`)を決定してください。
+        状況に応じて次のアクション(`action`)を決定してください。
 
-1. **テスト失敗 (Error/Fail)**:
-   - 実装ミスと思われる場合 -> `retry_code`
-   - テストコード自体や想定が誤っている場合 -> `retry_test`
-   - **仕様自体に矛盾や無理がある場合** -> `replan` (Architectに戻す)
+        1. **テスト失敗 (Error/Fail)**:
+            - 実装ミスと思われる場合 -> `retry_code`
+            - テストコード自体や想定が誤っている場合 -> `retry_test`
+            - **仕様自体に矛盾や無理がある場合** -> `replan` (Architectに戻す)
 
-2. **テスト成功 (Pass)**:
-   - 現在が 'dev' フェーズ -> `mutation_check` (品質保証へ)
-   - 現在が 'mutation' フェーズ -> `finish` (完了)
-"""),
+        2. **テスト成功 (Pass)**:
+            - 現在が 'dev' フェーズ -> `mutation_check` (品質保証へ)
+            - 現在が 'mutation' フェーズ -> `finish` (完了)
+        """),
         ("human", f"Current Phase: {current_phase}\nLog:\n{output}")
     ])
     
@@ -336,9 +336,9 @@ def node_mutation_tester(state: AgentState) -> AgentState:
     # 1. ミュータント生成
     prompt = ChatPromptTemplate.from_messages([
         ("system", """あなたは意地悪なQAエンジニアです。
-提供された正常なコードに対し、**「文法は正しいが論理が微妙に間違っているバグ」を1つだけ埋め込んだコード**（ミュータント）を作成してください。
-目的: 現在のテストスイートがこのバグを検知できるか試すこと。
-例: 境界値の変更 (<= を < に)、条件反転、+1の削除など。"""),
+        提供された正常なコードに対し、**「文法は正しいが論理が微妙に間違っているバグ」を1つだけ埋め込んだコード**（ミュータント）を作成してください。
+        目的: 現在のテストスイートがこのバグを検知できるか試すこと。
+        例: 境界値の変更 (<= を < に)、条件反転、+1の削除など。"""),
         ("human", f"Code:\n{original_impl}")
     ])
     chain = prompt | llm.with_structured_output(MutantOutput)
